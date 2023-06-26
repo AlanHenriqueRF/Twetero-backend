@@ -10,40 +10,60 @@ let tweets = [];
 let user = []
 
 app.post('/sign-up',(req,res)=>{
-	const new_user = {username:req.body.username,avatar:req.body.avatar}
+	const {username,avatar}= req.body
+	if (!req.body || !username || !avatar){
+		res.sendStatus(400)
+		return
+	}
+	if (typeof(username)!=='string' || typeof(avatar)!=='string'){
+		res.send('Todos os campos são obrigatórios!');
+		return
+	}
+
+	const new_user = {username,avatar}
 	
 	user.push(new_user)
-	res.send(new_user)//'ok')
+	res.send('ok')
 })
 
 app.post('/tweets',(req,res)=>{
+	const {username,tweet}=req.body;
+
 	if (user.length === 0){
 		res.send('UNAUTHORIZED');
-	}else{
-		const new_tweet = {
-			username: req.body.username,
-		  tweet: req.body.tweet
-		};
-
-		tweets.push(new_tweet);
-		res.send(new_tweet);//'ok');
+		return
 	}
+	if (!req.body || !username || !tweet){
+		res.sendStatus(400)
+		return
+	}
+	if (typeof(username)!=='string' || typeof(tweet)!=='string'){
+		res.send('Todos os campos são obrigatórios!');
+		return
+	}
+
+
+	const new_tweet = {
+		username,
+		tweet
+	};
+
+	tweets.push(new_tweet);
+	res.send('ok');
+	
 
 })
 
 app.get('/tweets',(req,res)=>{
 	tweets.forEach((tweet)=>{
 		const avatar = user.find((i)=>i.username===tweet.username)
-		console.log(tweet)
 		tweet.avatar = avatar.avatar;
-		console.log(tweet)
 		})
 	
 	while (tweets.length>10){
 		tweets.shift()
 	}
 
-	//console.log(tweets)
     res.send(tweets)
 })
 
