@@ -9,34 +9,42 @@ let tweets = [];
 
 let user = []
 
-app.get('/tweets',(req,res)=>{
-
-    res.send(tweets)
-		//[
-	//{
-		//username: "bobesponja",
-//avatar: "https://cdn.shopify.com/s/files/1/0150/0643/3380/files/Screen_Shot_2019-07-01_at_11.35.42_AM_370x230@2x.png",
-		//tweet: "Eu amo hambúrguer de siri!"
-	//}
-//])
-})
-
 app.post('/sign-up',(req,res)=>{
-	const new_user = [{username:req.body.username,avatar:req.body.avatar}]
+	const new_user = {username:req.body.username,avatar:req.body.avatar}
+	
 	user.push(new_user)
-	res.send('ok')
+	res.send(new_user)//'ok')
 })
 
 app.post('/tweets',(req,res)=>{
 	if (user.length === 0){
-		res.send('UNAUTHORIZED')
+		res.send('UNAUTHORIZED');
 	}else{
-		const new_tweet = [{
+		const new_tweet = {
 			username: req.body.username,
 		  tweet: req.body.tweet
-		}]
+		};
+
+		tweets.push(new_tweet);
+		res.send(new_tweet);//'ok');
 	}
 
+})
+
+app.get('/tweets',(req,res)=>{
+	tweets.forEach((tweet)=>{
+		const avatar = user.find((i)=>i.username===tweet.username)
+		console.log(tweet)
+		tweet.avatar = avatar.avatar;
+		console.log(tweet)
+		})
+	
+	while (tweets.length>10){
+		tweets.shift()
+	}
+
+	//console.log(tweets)
+    res.send(tweets)
 })
 
 app.listen(5000,()=>console.log('Ta rodando na porta 5000'))
