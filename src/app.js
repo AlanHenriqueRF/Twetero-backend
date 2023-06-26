@@ -16,21 +16,21 @@ app.post('/sign-up',(req,res)=>{
 		return
 	}
 	if (typeof(username)!=='string' || typeof(avatar)!=='string'){
-		res.send('Todos os campos são obrigatórios!');
+		res.status(400).send('Todos os campos são obrigatórios!');
 		return
 	}
 
 	const new_user = {username,avatar}
 	
 	user.push(new_user)
-	res.send('ok')
+	res.status(201).send('ok');
 })
 
 app.post('/tweets',(req,res)=>{
 	const {username,tweet}=req.body;
 
 	if (user.length === 0){
-		res.send('UNAUTHORIZED');
+		res.sendStatus(401);
 		return
 	}
 	if (!req.body || !username || !tweet){
@@ -38,7 +38,7 @@ app.post('/tweets',(req,res)=>{
 		return
 	}
 	if (typeof(username)!=='string' || typeof(tweet)!=='string'){
-		res.send('Todos os campos são obrigatórios!');
+		res.status(400).send('Todos os campos são obrigatórios!');
 		return
 	}
 
@@ -49,7 +49,7 @@ app.post('/tweets',(req,res)=>{
 	};
 
 	tweets.push(new_tweet);
-	res.send('ok');
+	res.status(201).send('ok');
 	
 
 })
@@ -65,6 +65,18 @@ app.get('/tweets',(req,res)=>{
 	}
 
     res.send(tweets)
+})
+
+app.get('/tweets/:username',(req,res)=>{
+	const {username} = req.params;
+	const tweet = tweets.filter((i)=>{
+		i.username === username
+	})
+	tweet.forEach((j)=>{
+		j.avatar = user.avatar
+	})
+	res.send(tweet)
+
 })
 
 app.listen(5000,()=>console.log('Ta rodando na porta 5000'))
