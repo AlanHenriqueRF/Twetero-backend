@@ -27,4 +27,16 @@ app.post('/sign-up',(req,res)=>{
 	res.send('ok')
 })
 
+app.post('/tweets',(req,res)=>{
+	if (user.length === 0){
+		res.send('UNAUTHORIZED')
+	}else{
+		const new_tweet = [{
+			username: req.body.username,
+		  tweet: req.body.tweet
+		}]
+	}
+
+})
+
 app.listen(5000,()=>console.log('Ta rodando na porta 5000'))
